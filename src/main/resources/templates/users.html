@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="layout/layout">
+
+<head>
+    <title>User Management</title>
+</head>
+
+<body>
+<!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<div layout:fragment="content">
+
+    <div th:if="${users != null}">
+        <!-- Page Heading -->
+        <h1 class="h3 mb-0 text-gray-800">Users Management</h1>
+        <p class="mb-4">
+            This page will help with user management. Functionalities like user creation, activation or modifications.
+        </p>
+        <div class="row">
+            <!-- Registered Users -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Active Users
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${activeUserCount}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- total active configs -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    User Pending Activation
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${inactiveUserCount}">0
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-alt-slash fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header d-sm-flex align-items-center  justify-content-between py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Users Lists</h6>
+                <a href="#" class="btn btn-success btn-icon-split" data-toggle="modal" data-target="#userModal">
+                    <span class="icon text-white-50 ">
+                      <i class="fas fa-user-plus"></i>
+                    </span>
+                    <span class="text">Add User</span>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable">
+                        <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th colspan="2">Active</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>User Name</th>
+                            <th colspan="2">Active</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Actions</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr th:each="user: ${users}">
+                            <td th:text="${user.userName}">User Name</td>
+                            <td>
+                                <input th:id="${user.userName}" type="checkbox" th:checked="${user.active}"/>
+                                <label th:for="${user.userName}" class="check-trail">
+                                    <span class="check-handler"></span>
+                                </label>
+                            </td>
+                            <td th:text="${user.authorities}">Roles</td>
+                            <td th:text="${user.firstName}">F Name</td>
+                            <td th:text="${user.lastName}">L Name</td>
+                            <td>
+                                <a href="#" th:href="@{/users/{userId}(userId=${user.id})}"
+                                   class="d-none d-inline-block btn btn-primary shadow">
+                                    <i class="fas fa-user-edit fa text-white-50"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Modal-->
+        <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form th:method="post" th:action="@{/users/create}">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Create User</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input type="text" name="firstName"
+                                           class="form-control form-control-user"
+                                           placeholder="First Name"
+                                           autocomplete="off">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" name="lastName"
+                                           class="form-control form-control-user"
+                                           placeholder="Last Name"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" name="userName"
+                                       class="form-control form-control-user"
+                                       placeholder="User Name"
+                                       autocomplete="off">
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-4 mb-3 mb-sm-0 row">
+                                    <div class="col-sm-6">Active</div>
+                                    <div class="col-sm-6">
+                                        <input id="newUser" type="checkbox" name="active">
+                                        <label for="newUser" class="check-trail">
+                                            <span class="check-handler"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input type="password" name="password"
+                                           class="form-control form-control-user"
+                                           placeholder="Password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${user != null}">
+        <h1 class="h3 mb-0 text-gray-800">User Management</h1>
+        <p class="mb-4">
+            This page will help with user management. Functionalities like user creation, activation or modifications.
+        </p>
+        <div class="card shadow mb-4">
+            <div class="card-header d-sm-flex align-items-center  justify-content-between py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Edit User</h6>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/users/{userId}/update(userId=${user.id})}" th:method="post">
+                    <div class="form-group row">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName"
+                                   class="form-control form-control-user"
+                                   placeholder="First Name"
+                                   autocomplete="off" th:value="${user.firstName}">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="lastName">First Name</label>
+                            <input type="text" id="lastName" name="lastName"
+                                   class="form-control form-control-user"
+                                   placeholder="Last Name"
+                                   autocomplete="off" th:value="${user.lastName}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userName">First Name</label>
+                        <input type="email" id="userName" name="userName"
+                               class="form-control form-control-user"
+                               placeholder="User Name"
+                               autocomplete="off" th:value="${user.userName}" th:readonly="true">
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-4 mb-3 mb-sm-0 row">
+                            <div class="col-sm-6">Active</div>
+                            <div class="col-sm-6">
+                                <input id="updateUser" type="checkbox" name="active" th:checked="${user.active}">
+                                <label for="updateUser" class="check-trail">
+                                    <span class="check-handler"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password"
+                                   class="form-control form-control-user"
+                                   placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tags_1">Granted Authorities</label>
+                        <input id="tags_1" type="text" name="perm"
+                               th:value="${user.authoritiesStr()}"
+                               data-role="tagsinput"/>
+                    </div>
+
+                    <a class="btn btn-danger btn-icon-split" href="#" data-toggle="modal"
+                       data-target="#deleteUserModal">
+                        <span class="icon text-white-50">
+                          <i class="fas fa-user-minus"></i>
+                        </span>
+                        <span class="text">Delete</span>
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50">
+                          <i class="fas fa-save"></i>
+                        </span>
+                        <span class="text">Update</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- delete user modal -->
+        <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Are yu sure?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select Delete If you are sure you want to delete
+                        <span th:text="${user.userName}"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <form th:action="@{/users/{userId}/delete(userId=${user.id})}" th:method="post">
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

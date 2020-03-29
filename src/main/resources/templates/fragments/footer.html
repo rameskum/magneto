@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<body>
+
+<footer class="footer" th:fragment="footer">
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <div aria-live="polite" aria-atomic="true"><!--style="d-flex justify-content-center align-items-center"-->
+        <!-- Position it -->
+        <div style="position: absolute; top: 5rem; right: 10px;">
+
+            <div class="toast" th:if="${param != null && param.get('success') != null}" role="alert"
+                 aria-live="assertive" aria-atomic="true" data-delay="10000">
+                <div class="toast-header">
+                    <strong class="mr-auto">Success</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body badge-success" th:text="${param.get('success')} ? ${param.get('success')}">
+                    Operation successfull
+                </div>
+            </div>
+
+            <div class="toast" th:if="${param != null && param.get('error') != null}" role="alert" aria-live="assertive"
+                 aria-atomic="true" data-delay="10000">
+                <div class="toast-header badge-danger">
+                    <strong class="mr-auto">Something Broke</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body badge-danger" th:text="${param.get('error')} ? ${param.get('error')}">
+                    Something went wrong
+                </div>
+            </div>
+
+            <div class="toast" th:if="${param != null && param.get('info') != null}" role="alert" aria-live="assertive"
+                 aria-atomic="true" data-delay="10000">
+                <div class="toast-header">
+                    <strong class="mr-auto">Info</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body badge-info" th:text="${param.get('info')} ? ${param.get('info')}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <form th:action="@{/logout}" th:method="post">
+                        <button type="submit" class="btn btn-primary">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js" th:src="@{~/vendor/jquery/jquery.min.js}"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"
+            th:src="@{~/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"
+            th:src="@{~/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+    <script th:src="@{~/vendor/jQuery-Tags-Input-master/dist/jquery.tagsinput.min.js}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/main.js" th:src="@{~/js/main.js}"></script>
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+            $('.toast').toast('show');
+            $('#tags_1').tagsInput({width: 'auto'});
+        });
+    </script>
+
+    <script th:if="false" type="application/javascript">
+        $('[data-toggle="modal"]').click(function () {
+            var url = $(this).data("url");
+            var target = $(this).data("target");
+            if (url) {
+                console.log("invoking a get request at " + url);
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    dataType: 'json',
+                    success: function (res) {
+                        var data = res.body;
+                        console.log(res);
+                        $('.modal-body').text(data);
+                        $(target).modal('show');
+                    },
+                    error: function (request, status, error) {
+                        console.log("ajax call went wrong:" + request.responseText);
+                    }
+                });
+            } else {
+                console.log("no url attribute provided.");
+            }
+        })
+    </script>
+</footer>
+
+</body>
+
+</html>
